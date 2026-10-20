@@ -40,7 +40,7 @@ The `ULTRA` badge in the session header opens a dedicated **Ultracode** tab in t
 - **Phase lanes** — every phase with a progress rail, dots, and a `settled/total` count. Phases named Review, Verify, Check, Audit, or Adversarial carry a small `verify` tag and a flat tint.
 - **Agent rows** — status, label, model, token total, and wall time. Each row is live: running agents tick, and tokens/models update from the child Session's own projections.
 - **Drill-down** — click an agent to open its child conversation in the right sidebar: a new pane when the layout allows, otherwise a sibling tab. The workflow ledger stays open.
-- **Arm / stand down** — the panel header owns the only arm control; when Ultracode is off, the ledger remains readable and a banner explains the state.
+- **One overview block** — the panel opens with a single card that merges state, totals, a one-line explanation, and the only arm/stand-down control. When Ultracode is off, history remains readable below it.
 - **Cost context** — the panel keeps total workflows, agents, and tokens visible, and marks runs above twelve agents as high fan-out.
 
 The badge is always present once the Host projection is available, so the ledger is reachable even while the mode is off. The right sidebar's guide also lists the panel as an entry.

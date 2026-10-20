@@ -52,7 +52,7 @@ Install the cloned directory through **Plugins → Add plugin** as above. The pl
 | Action | How |
 | --- | --- |
 | Arm the session | `/ultracode`, or click the Ultracode pill in the composer |
-| Disarm | `/ultracode off`, the composer pill, or the panel header's arm control |
+| Disarm | `/ultracode off`, the composer pill, or the panel overview's arm control |
 | Check the stance | `/ultracode status` |
 | Open the ledger | Click the `ULTRA` badge in the session header, or right sidebar → **Ultracode** |
 | Inspect a run | Expand **Finished**, open a phase, click an agent to read its child transcript |

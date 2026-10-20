@@ -24,7 +24,6 @@ window.__ModuleLoader__.load({
       'badge.aria': 'Open Ultracode workflows, armed',
       'badge.historyAria': 'Open Ultracode workflows',
       'panel.title': 'Ultracode',
-      'panel.subtitle': 'Dynamic workflows',
       'panel.guide': 'Live workflow runs: phases, agents, models, tokens, and time.',
       'panel.arm': 'Arm Ultracode',
       'panel.disarm': 'Stand down',
@@ -32,21 +31,16 @@ window.__ModuleLoader__.load({
       'panel.disarming': 'Standing down…',
       'panel.armed': 'Armed',
       'panel.off': 'Off',
-      'panel.loading': 'Loading…',
-      'panel.totals': '{workflows} workflows · {agents} agents · {tokens} tokens',
+      'panel.state.loading': 'Loading workflows…',
+      'panel.state.armed': 'Phases and agents update live.',
+      'panel.state.armedIdle': 'Waiting for the first substantive task. Trivial requests stay direct.',
+      'panel.state.offHistory': 'History stays inspectable.',
+      'panel.state.offIdle': 'No workflows yet. The next substantive request runs as a workflow once armed.',
+      'panel.workflowCount': '{count} workflow',
+      'panel.workflowsCount': '{count} workflows',
+      'panel.agentCount': '{count} agent',
       'panel.agentsCount': '{count} agents',
       'panel.tokensCount': '{tokens} tokens',
-      'panel.waitingTitle': 'Armed and waiting',
-      'panel.waiting': 'The next substantive task will fan out here. Trivial requests stay direct.',
-      'panel.offText': 'Arm Ultracode to turn every substantive request into a multi-agent workflow.',
-      'panel.activeText': 'Phases and agents update live. Verification phases carry a shield; open an agent to read its transcript.',
-      'panel.historyBanner': 'Ultracode is off — running and finished workflows stay inspectable.',
-      'panel.emptyTitle': 'Turn tasks into workflows',
-      'panel.emptyText': 'Ultracode is off. When armed, every substantive request becomes a scoped, verified workflow.',
-      'panel.emptyHint': 'Use Arm Ultracode above.',
-      'panel.feature1': 'Scope → fan out → verify → synthesize',
-      'panel.feature2': 'Per-agent model, tokens, and wall time',
-      'panel.feature3': 'Verification phases marked; finished runs retained',
       'panel.agent': 'Agent',
       'panel.tokens': 'Tokens',
       'panel.time': 'Time',
@@ -59,7 +53,6 @@ window.__ModuleLoader__.load({
       'panel.finished': 'Finished',
       'panel.starting': 'Starting…',
       'panel.cost': 'Dynamic workflows spend more tokens and time than serial work.',
-      'panel.error': 'Ultracode toggle failed',
       'panel.status.running': 'Running',
       'panel.status.completed': 'Completed',
       'panel.status.failed': 'Failed',
@@ -82,7 +75,6 @@ window.__ModuleLoader__.load({
       'badge.aria': '打开 Ultracode 工作流（已武装）',
       'badge.historyAria': '打开 Ultracode 工作流',
       'panel.title': 'Ultracode',
-      'panel.subtitle': '动态工作流',
       'panel.guide': '实时工作流：阶段、智能体、模型、Token 与耗时。',
       'panel.arm': '武装 Ultracode',
       'panel.disarm': '解除',
@@ -90,21 +82,16 @@ window.__ModuleLoader__.load({
       'panel.disarming': '正在解除…',
       'panel.armed': '已武装',
       'panel.off': '已关闭',
-      'panel.loading': '加载中…',
-      'panel.totals': '{workflows} 个工作流 · {agents} 个智能体 · {tokens} Token',
+      'panel.state.loading': '正在加载工作流…',
+      'panel.state.armed': '阶段与智能体实时更新。',
+      'panel.state.armedIdle': '等待第一个实质性任务；琐碎请求仍直接处理。',
+      'panel.state.offHistory': '历史仍可查看。',
+      'panel.state.offIdle': '暂无工作流。武装后，下一个实质性请求将作为工作流运行。',
+      'panel.workflowCount': '{count} 个工作流',
+      'panel.workflowsCount': '{count} 个工作流',
+      'panel.agentCount': '{count} 个智能体',
       'panel.agentsCount': '{count} 个智能体',
       'panel.tokensCount': '{tokens} Token',
-      'panel.waitingTitle': '已武装，等待任务',
-      'panel.waiting': '下一个实质性任务将在这里展开；琐碎请求仍直接处理。',
-      'panel.offText': '武装 Ultracode，把每个实质性请求变成多智能体工作流。',
-      'panel.activeText': '阶段与智能体实时更新。验证阶段带有盾牌标记；点击智能体可查看其对话。',
-      'panel.historyBanner': 'Ultracode 已关闭 — 运行中和已完成的工作流仍可查看。',
-      'panel.emptyTitle': '把任务变成工作流',
-      'panel.emptyText': 'Ultracode 已关闭。武装后，每个实质性请求都会变成经过定界与验证的工作流。',
-      'panel.emptyHint': '使用上方的「武装 Ultracode」。',
-      'panel.feature1': '定界 → 扇出 → 验证 → 综合',
-      'panel.feature2': '逐个智能体的模型、Token 与耗时',
-      'panel.feature3': '标记验证阶段，保留已完成的工作流',
       'panel.agent': '智能体',
       'panel.tokens': 'Token',
       'panel.time': '耗时',
@@ -117,7 +104,6 @@ window.__ModuleLoader__.load({
       'panel.finished': '已完成',
       'panel.starting': '正在启动…',
       'panel.cost': '动态工作流比串行工作消耗更多 Token 与时间。',
-      'panel.error': 'Ultracode 切换失败',
       'panel.status.running': '运行中',
       'panel.status.completed': '已完成',
       'panel.status.failed': '失败',
@@ -182,16 +168,24 @@ window.__ModuleLoader__.load({
   background: transparent;
 }
 .ucp-root *, .ucp-root *::before, .ucp-root *::after { box-sizing: border-box; }
-.ucp-head {
-  flex: none; display: flex; align-items: center; gap: 10px;
-  padding: 11px 13px; border-bottom: 1px solid var(--dsw-alias-border-l1);
+.ucp-overview {
+  flex: none; margin: 11px 11px 0; padding: 10px 11px;
+  border: 1px solid var(--dsw-alias-border-l1); border-radius: var(--dsw-radius-lg);
+  background: var(--dsw-alias-bg-layer-1);
 }
-.ucp-headMain { display: flex; align-items: center; gap: 7px; min-width: 0; flex: 1; }
-.ucp-headDot { width: 6px; height: 6px; flex: none; border-radius: 999px; background: var(--dsw-alias-border-l2); }
-.ucp-headDot[data-active="true"] { background: var(--ucp-accent); }
-.ucp-titleWrap { display: flex; flex-direction: column; min-width: 0; }
-.ucp-title { font-size: 13px; font-weight: 600; line-height: 17px; white-space: nowrap; }
-.ucp-sub { font-size: 10px; line-height: 13px; color: var(--dsw-alias-label-tertiary); white-space: nowrap; }
+.ucp-overview[data-active="true"] { border-color: color-mix(in srgb, var(--ucp-accent) 22%, var(--dsw-alias-border-l1)); }
+.ucp-overviewTop { display: flex; align-items: center; gap: 7px; min-width: 0; flex-wrap: wrap; }
+.ucp-overviewDot { width: 6px; height: 6px; flex: none; border-radius: 999px; background: var(--dsw-alias-border-l2); }
+.ucp-overviewDot[data-active="true"] { background: var(--ucp-accent); }
+.ucp-overviewTitle { font-size: 13px; font-weight: 600; line-height: 17px; white-space: nowrap; }
+.ucp-overviewState { font-size: 9px; font-weight: 600; line-height: 14px; letter-spacing: .07em; text-transform: uppercase; color: var(--dsw-alias-label-tertiary); }
+.ucp-overview[data-active="true"] .ucp-overviewState { color: var(--ucp-accent); }
+.ucp-overviewActions { margin-left: auto; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.ucp-overviewCounts {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 10.5px; color: var(--dsw-alias-label-tertiary); font-variant-numeric: tabular-nums;
+}
+.ucp-overviewText { margin: 6px 0 0; color: var(--dsw-alias-label-secondary); font-size: 11.5px; line-height: 17px; }
 .ucp-power {
   flex: none; height: 24px; padding: 0 8px; border: 1px solid var(--dsw-alias-border-l2);
   border-radius: var(--dsw-radius-sm); background: transparent; color: var(--dsw-alias-label-secondary);
@@ -205,27 +199,10 @@ window.__ModuleLoader__.load({
 }
 .ucp-power:disabled { opacity: .5; cursor: default; }
 .ucp-error {
-  flex: none; padding: 7px 13px; border-bottom: 1px solid var(--dsw-alias-border-l1);
-  color: var(--ucp-bad); font-size: 11px; line-height: 16px;
+  flex: none; margin: 8px 11px 0; color: var(--ucp-bad); font-size: 11px; line-height: 16px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.ucp-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 11px 11px 18px; display: flex; flex-direction: column; gap: 10px; }
-.ucp-summary {
-  flex: none; padding: 10px 11px; border: 1px solid var(--dsw-alias-border-l1);
-  border-radius: var(--dsw-radius-lg); background: var(--dsw-alias-bg-layer-1);
-}
-.ucp-summary[data-active="true"] { border-color: color-mix(in srgb, var(--ucp-accent) 22%, var(--dsw-alias-border-l1)); }
-.ucp-summaryTop { display: flex; align-items: center; gap: 7px; min-width: 0; flex-wrap: wrap; }
-.ucp-liveDot { width: 6px; height: 6px; flex: none; border-radius: 999px; background: var(--dsw-alias-border-l2); }
-.ucp-liveDot[data-on="true"] { background: var(--ucp-accent); }
-.ucp-summaryLabel { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
-.ucp-summaryCounts { margin-left: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; color: var(--dsw-alias-label-tertiary); font-variant-numeric: tabular-nums; }
-.ucp-summaryText { margin: 6px 0 0; color: var(--dsw-alias-label-secondary); font-size: 11.5px; line-height: 17px; }
-.ucp-banner {
-  flex: none; padding: 7px 10px; border: 1px solid var(--dsw-alias-border-l1);
-  border-radius: var(--dsw-radius-md); background: var(--dsw-alias-bg-layer-1);
-}
-.ucp-bannerText { font-size: 11px; line-height: 16px; color: var(--dsw-alias-label-secondary); }
+.ucp-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 11px 18px; display: flex; flex-direction: column; gap: 10px; }
 .ucp-sectionHead { display: flex; align-items: center; gap: 6px; margin: 2px 1px -3px; font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--dsw-alias-label-tertiary); }
 .ucp-sectionDot { width: 5px; height: 5px; border-radius: 999px; background: var(--ucp-accent); }
 .ucp-sectionCount { padding: 0 4px; border-radius: 999px; background: color-mix(in srgb, var(--dsw-alias-label-tertiary) 10%, transparent); font-size: 9px; line-height: 14px; }
@@ -307,25 +284,7 @@ window.__ModuleLoader__.load({
 .ucp-finishedHead { display: flex; align-items: center; gap: 7px; margin-top: 3px; font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--dsw-alias-label-tertiary); }
 .ucp-finishedHead::after { content: ''; flex: 1; height: 1px; background: var(--dsw-alias-border-l1); }
 .ucp-finishedCount { order: -1; padding: 0 4px; border-radius: 999px; background: color-mix(in srgb, var(--dsw-alias-label-tertiary) 10%, transparent); font-size: 9px; line-height: 14px; }
-.ucp-empty {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 7px; padding: 13px;
-  border: 1px solid var(--dsw-alias-border-l1); border-radius: var(--dsw-radius-lg);
-  background: var(--dsw-alias-bg-layer-1);
-}
-.ucp-emptyTitle { margin: 0; font-size: 13px; font-weight: 600; line-height: 18px; }
-.ucp-emptyText { margin: 0; font-size: 11.5px; line-height: 17px; color: var(--dsw-alias-label-secondary); }
-.ucp-features { display: flex; flex-direction: column; gap: 3px; font-size: 11px; line-height: 16px; color: var(--dsw-alias-label-tertiary); }
-.ucp-features span { display: block; }
-.ucp-emptyHint { margin: 2px 0 0; font-size: 10.5px; line-height: 15px; color: var(--dsw-alias-label-tertiary); }
-.ucp-waiting {
-  padding: 12px; border: 1px solid color-mix(in srgb, var(--ucp-accent) 20%, var(--dsw-alias-border-l1));
-  border-radius: var(--dsw-radius-lg); background: var(--dsw-alias-bg-layer-1);
-}
-.ucp-waitingLine { height: 2px; width: 100%; border-radius: 999px; background: color-mix(in srgb, var(--ucp-accent) 40%, transparent); margin-bottom: 9px; }
-.ucp-waitingTitle { font-size: 12.5px; font-weight: 600; line-height: 17px; }
-.ucp-waitingText { margin: 4px 0 0; font-size: 11.5px; line-height: 17px; color: var(--dsw-alias-label-secondary); }
 .ucp-cost { margin: 2px 2px 0; font-size: 10px; line-height: 15px; color: var(--dsw-alias-label-tertiary); }
-.ucp-loading { padding: 18px 4px; color: var(--dsw-alias-label-tertiary); font-size: 12px; line-height: 18px; }
 .ucp-guideDot { width: 6px; height: 6px; border-radius: 999px; background: var(--dsw-alias-label-tertiary); display: block; }
 @keyframes uc-fade { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
 @keyframes ucp-fade { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
@@ -703,61 +662,36 @@ window.__ModuleLoader__.load({
       )
     }
 
-    function EmptyPanel({ t }) {
-      return h(
-        'div',
-        { className: 'ucp-empty' },
-        h('h2', { className: 'ucp-emptyTitle' }, t('panel.emptyTitle')),
-        h('p', { className: 'ucp-emptyText' }, t('panel.emptyText')),
-        h(
-          'div',
-          { className: 'ucp-features' },
-          h('span', { key: 'one' }, t('panel.feature1')),
-          h('span', { key: 'two' }, t('panel.feature2')),
-          h('span', { key: 'three' }, t('panel.feature3')),
-        ),
-        h('p', { className: 'ucp-emptyHint' }, t('panel.emptyHint')),
-      )
-    }
-
-    function WaitingCard({ t }) {
-      return h(
-        'div',
-        { className: 'ucp-waiting' },
-        h('div', { className: 'ucp-waitingLine' }),
-        h('div', { className: 'ucp-waitingTitle' }, t('panel.waitingTitle')),
-        h('p', { className: 'ucp-waitingText' }, t('panel.waiting')),
-      )
-    }
-
-    function PanelHeader({ active, pending, loaded, powerLabel, t, onToggle }) {
+    function PanelOverview({ active, pending, loaded, counts, stateText, powerLabel, t, onToggle }) {
       return h(
         'header',
-        { className: 'ucp-head' },
+        { className: 'ucp-overview', 'data-active': active ? 'true' : 'false' },
         h(
           'div',
-          { className: 'ucp-headMain' },
-          h('span', { className: 'ucp-headDot', 'data-active': active ? 'true' : 'false' }),
+          { className: 'ucp-overviewTop' },
+          h('span', { className: 'ucp-overviewDot', 'data-active': active ? 'true' : 'false' }),
+          h('span', { className: 'ucp-overviewTitle' }, t('panel.title')),
+          loaded ? h('span', { className: 'ucp-overviewState' }, active ? t('panel.armed') : t('panel.off')) : null,
           h(
-            'span',
-            { className: 'ucp-titleWrap' },
-            h('span', { className: 'ucp-title' }, t('panel.title')),
-            h('span', { className: 'ucp-sub' }, t('panel.subtitle')),
+            'div',
+            { className: 'ucp-overviewActions' },
+            counts !== null ? h('span', { className: 'ucp-overviewCounts', title: counts }, counts) : null,
+            h(
+              'button',
+              {
+                type: 'button',
+                className: 'ucp-power',
+                'data-active': active ? 'true' : 'false',
+                'aria-pressed': active,
+                disabled: pending !== null || !loaded,
+                title: powerLabel,
+                onClick: onToggle,
+              },
+              h('span', {}, powerLabel),
+            ),
           ),
         ),
-        h(
-          'button',
-          {
-            type: 'button',
-            className: 'ucp-power',
-            'data-active': active ? 'true' : 'false',
-            'aria-pressed': active,
-            disabled: pending !== null || !loaded,
-            title: powerLabel,
-            onClick: onToggle,
-          },
-          h('span', {}, powerLabel),
-        ),
+        h('p', { className: 'ucp-overviewText' }, stateText),
       )
     }
 
@@ -866,65 +800,32 @@ window.__ModuleLoader__.load({
           : active
             ? t('panel.disarm')
             : t('panel.arm')
-      const summaryText = active
-        ? runs.length > 0
-          ? t('panel.activeText')
-          : t('panel.waiting')
-        : t('panel.offText')
 
-      if (!loaded) {
-        return h(
-          'div',
-          { className: 'ucp-root', 'data-ultracode-panel': true },
-          h(PanelHeader, {
-            active,
-            pending,
-            loaded,
-            powerLabel: t('panel.arm'),
-            t,
-            onToggle: () => request(!active),
-          }),
-          h('div', { className: 'ucp-scroll' }, h('div', { className: 'ucp-loading' }, t('panel.loading'))),
-        )
+      let counts = null
+      if (runs.length > 0) {
+        const parts = [
+          runs.length === 1
+            ? t('panel.workflowCount', { count: 1 })
+            : t('panel.workflowsCount', { count: runs.length }),
+          totalAgents === 1
+            ? t('panel.agentCount', { count: 1 })
+            : t('panel.agentsCount', { count: totalAgents }),
+        ]
+        if (anyTokens) parts.push(t('panel.tokensCount', { tokens: formatTokens(totalTokens) }))
+        counts = parts.join(' · ')
       }
+
+      const stateText = !loaded
+        ? t('panel.state.loading')
+        : active
+          ? runs.length > 0
+            ? t('panel.state.armed')
+            : t('panel.state.armedIdle')
+          : runs.length > 0
+            ? t('panel.state.offHistory')
+            : t('panel.state.offIdle')
 
       const children = []
-      children.push(
-        h(
-          'div',
-          { className: 'ucp-summary', key: 'summary', 'data-active': active ? 'true' : 'false' },
-          h(
-            'div',
-            { className: 'ucp-summaryTop' },
-            h('span', { className: 'ucp-liveDot', 'data-on': active ? 'true' : 'false' }),
-            h('span', { className: 'ucp-summaryLabel' }, active ? t('panel.armed') : t('panel.off')),
-            h(
-              'span',
-              { className: 'ucp-summaryCounts' },
-              t('panel.totals', {
-                workflows: runs.length,
-                agents: totalAgents,
-                tokens: anyTokens ? formatTokens(totalTokens) : '—',
-              }),
-            ),
-          ),
-          h('p', { className: 'ucp-summaryText' }, summaryText),
-        ),
-      )
-
-      if (!active && runs.length > 0) {
-        children.push(
-          h(
-            'div',
-            { className: 'ucp-banner', key: 'history-banner' },
-            h('span', { className: 'ucp-bannerText' }, t('panel.historyBanner')),
-          ),
-        )
-      }
-
-      if (runs.length === 0) {
-        children.push(active ? h(WaitingCard, { key: 'waiting', t }) : h(EmptyPanel, { key: 'empty', t }))
-      }
 
       if (activeRuns.length > 0) {
         children.push(
@@ -987,15 +888,17 @@ window.__ModuleLoader__.load({
         )
       }
 
-      children.push(h('p', { className: 'ucp-cost', key: 'cost' }, t('panel.cost')))
+      if (loaded) children.push(h('p', { className: 'ucp-cost', key: 'cost' }, t('panel.cost')))
 
       return h(
         'div',
         { className: 'ucp-root', 'data-ultracode-panel': true },
-        h(PanelHeader, {
+        h(PanelOverview, {
           active,
           pending,
           loaded,
+          counts,
+          stateText,
           powerLabel,
           t,
           onToggle: () => request(!active),
