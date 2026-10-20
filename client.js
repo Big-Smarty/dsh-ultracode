@@ -278,7 +278,9 @@ window.__ModuleLoader__.load({
   box-shadow: inset 0 0 0 1px var(--dsw-alias-border-l2);
 }
 .uc-badge[data-active="false"] .uc-bolt { animation: none; }
+.uc-badgeWrap { display: inline-flex; align-items: center; gap: 4px; }
 .uc-badgeText { line-height: 1; }
+.uc-badgeError { color: var(--dsw-alias-state-error-primary); font-size: 11px; font-weight: 700; line-height: 1; cursor: help; }
 .uc-badgeCount { font-size: 9px; line-height: 14px; padding: 0 4px; border-radius: 999px; background: color-mix(in srgb, currentColor 10%, transparent); }
 .uc-badge .uc-bolt { animation: uc-breathe 2.6s ease-in-out infinite; }
 .uc-seam { position: absolute; inset: 0 0 auto; height: 0; pointer-events: none; z-index: 3; }
@@ -1253,23 +1255,36 @@ window.__ModuleLoader__.load({
     function UltracodeBadge({ useProjection, openPanel, t }) {
       const stance = useProjection('ultracode')
       const ledger = useProjection('ultracodeRuns')
+      const [failure, setFailure] = React.useState(null)
       if (stance === undefined && ledger === undefined) return null
       const active = stance !== undefined && stance.active === true
       const historyCount = ledger?.runs?.length ?? 0
+      const baseTitle = active ? t('badge.title') : t('badge.historyTitle')
       return h(
-        'button',
-        {
-          type: 'button',
-          className: 'uc-badge',
-          'data-active': active ? 'true' : 'false',
-          title: active ? t('badge.title') : t('badge.historyTitle'),
-          'aria-label': active ? t('badge.aria') : t('badge.historyAria'),
-          onClick: openPanel,
-        },
-        h(Bolt, { size: 11, className: 'uc-bolt' }),
-        h('span', { className: 'uc-badgeText' }, t('badge.text')),
-        historyCount > 0 ? h('span', { className: 'uc-badgeCount' }, String(historyCount)) : null,
-        active ? h('span', { className: 'uc-dot', 'aria-hidden': true }) : null,
+        'span',
+        { className: 'uc-badgeWrap' },
+        h(
+          'button',
+          {
+            type: 'button',
+            className: 'uc-badge',
+            'data-active': active ? 'true' : 'false',
+            title: failure ?? baseTitle,
+            'aria-label': active ? t('badge.aria') : t('badge.historyAria'),
+            onClick: () => {
+              const outcome = typeof openPanel === 'function' ? openPanel() : 'Ultracode opener is unavailable'
+              if (typeof outcome === 'string' && outcome !== '') setFailure(outcome)
+              else setFailure(null)
+            },
+          },
+          h(Bolt, { size: 11, className: 'uc-bolt' }),
+          h('span', { className: 'uc-badgeText' }, t('badge.text')),
+          historyCount > 0 ? h('span', { className: 'uc-badgeCount' }, String(historyCount)) : null,
+          active ? h('span', { className: 'uc-dot', 'aria-hidden': true }) : null,
+        ),
+        failure !== null
+          ? h('span', { className: 'uc-badgeError', role: 'status', title: failure }, '!')
+          : null,
       )
     }
 
@@ -1311,7 +1326,7 @@ window.__ModuleLoader__.load({
       ctx.effect(() => ctx.locale.register(NS, { en, zh }), 'ultracode: dictionaries')
 
       const t = ctx.locale.bind(NS)
-      const graph = { openPanel: () => false }
+      const graph = { openPanel: () => 'Ultracode sidebar services are not available yet' }
 
       const toggle = async (sessionId, next) => {
         const result = await ctx.remote.commands.execute(sessionId, `/ultracode ${next ? 'on' : 'off'}`, [])
@@ -1375,59 +1390,92 @@ window.__ModuleLoader__.load({
       )
 
       ctx.inject(['sidebarRight', 'sidebarRightTabs'], (side) => {
-        side.effect(
-          () =>
-            side.sidebarRightTabs.register({
-              id: TAB_ID,
-              kind: TAB_KIND,
-              title: () => t('panel.title'),
-              guide: [
-                {
-                  id: 'ultracode-workflows',
-                  title: () => t('panel.title'),
-                  description: () => t('panel.guide'),
-                  icon: Bolt,
-                  order: 50,
-                },
-              ],
-            }),
-          'ultracode: sidebar tab type',
-        )
+        const tabs = side.sidebarRightTabs
+        const sidebar = side.sidebarRight
 
-        side.slots.inject('sidebar.right.pane.tab', () =>
-          side.slots.register(
-            {
-              name: 'sidebar.right.pane.tab',
-              key: TAB_ID,
-              locale: NS,
-              inject: (sessionId) => ({
-                toggle: (next) => toggle(sessionId, next),
-                resolveChild: (childId) => ctx.sessions.subagentAddress(childId),
-              }),
-            },
-            UltracodePanel,
-          ),
-        )
-
-        side.slots.inject('sidebar.right.pane.tab.title', () =>
-          side.slots.register(
-            {
-              name: 'sidebar.right.pane.tab.title',
-              key: TAB_ID,
-              locale: NS,
-            },
-            UltracodeTabTitle,
-          ),
-        )
-
+        // Assign the opener before anything can throw: a bad registration must
+        // surface as an error on the badge, not a dead button.
         graph.openPanel = () => {
           try {
-            side.sidebarRight.openTab(TAB_KIND, { revealIfOpened: true })
-            return true
-          } catch {
-            return false
+            sidebar.openTab(TAB_KIND, { revealIfOpened: true })
+            return null
+          } catch (cause) {
+            const message = cause instanceof Error ? cause.message : String(cause)
+            console.error('[ultracode] could not open the workflow sidebar:', message)
+            try {
+              sidebar.openTab('guide', { revealIfOpened: true })
+            } catch {
+              // The guide is a convenience fallback; the error is the real result.
+            }
+            return message
           }
         }
+
+        // A client reload can briefly leave the previous generation's type in
+        // the registry. Reuse it rather than failing setup on a duplicate id.
+        if (tabs.get(TAB_KIND) === undefined) {
+          try {
+            ctx.effect(
+              () =>
+                tabs.register({
+                  id: TAB_ID,
+                  kind: TAB_KIND,
+                  title: () => t('panel.title'),
+                  guide: [
+                    {
+                      id: 'ultracode-workflows',
+                      title: () => t('panel.title'),
+                      description: () => t('panel.guide'),
+                      icon: Bolt,
+                      order: 50,
+                    },
+                  ],
+                }),
+              'ultracode: sidebar tab type',
+            )
+          } catch (cause) {
+            console.error('[ultracode] sidebar tab type registration failed:', cause)
+          }
+        }
+
+        const register = (slot, options, component) => {
+          try {
+            ctx.slots.inject(slot, () => {
+              try {
+                return ctx.slots.register(options(), component)
+              } catch (cause) {
+                console.error('[ultracode] sidebar slot registration failed:', slot, cause)
+                return () => {}
+              }
+            })
+          } catch (cause) {
+            console.error('[ultracode] sidebar slot injection failed:', slot, cause)
+          }
+        }
+
+        register(
+          'sidebar.right.pane.tab',
+          () => ({
+            name: 'sidebar.right.pane.tab',
+            key: TAB_ID,
+            locale: NS,
+            inject: (sessionId) => ({
+              toggle: (next) => toggle(sessionId, next),
+              resolveChild: (childId) => ctx.sessions.subagentAddress(childId),
+            }),
+          }),
+          UltracodePanel,
+        )
+
+        register(
+          'sidebar.right.pane.tab.title',
+          () => ({
+            name: 'sidebar.right.pane.tab.title',
+            key: TAB_ID,
+            locale: NS,
+          }),
+          UltracodeTabTitle,
+        )
       })
     }
 
