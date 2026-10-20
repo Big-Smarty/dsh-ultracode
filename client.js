@@ -1326,7 +1326,24 @@ window.__ModuleLoader__.load({
       ctx.effect(() => ctx.locale.register(NS, { en, zh }), 'ultracode: dictionaries')
 
       const t = ctx.locale.bind(NS)
-      const graph = { openPanel: () => 'Ultracode sidebar services are not available yet' }
+      const openWorkflowPanel = () => {
+        const sidebar = ctx.get('sidebarRight')
+        if (sidebar === undefined) return 'Ultracode sidebar services are not available yet'
+        try {
+          sidebar.openTab(TAB_KIND, { revealIfOpened: true })
+          return null
+        } catch (cause) {
+          const message = cause instanceof Error ? cause.message : String(cause)
+          console.error('[ultracode] could not open the workflow sidebar:', message)
+          try {
+            sidebar.openTab('guide', { revealIfOpened: true })
+          } catch {
+            // The guide is a convenience fallback; the error is the real result.
+          }
+          return message
+        }
+      }
+      const graph = { openPanel: openWorkflowPanel }
 
       const toggle = async (sessionId, next) => {
         const result = await ctx.remote.commands.execute(sessionId, `/ultracode ${next ? 'on' : 'off'}`, [])
@@ -1391,25 +1408,6 @@ window.__ModuleLoader__.load({
 
       ctx.inject(['sidebarRight', 'sidebarRightTabs'], (side) => {
         const tabs = side.sidebarRightTabs
-        const sidebar = side.sidebarRight
-
-        // Assign the opener before anything can throw: a bad registration must
-        // surface as an error on the badge, not a dead button.
-        graph.openPanel = () => {
-          try {
-            sidebar.openTab(TAB_KIND, { revealIfOpened: true })
-            return null
-          } catch (cause) {
-            const message = cause instanceof Error ? cause.message : String(cause)
-            console.error('[ultracode] could not open the workflow sidebar:', message)
-            try {
-              sidebar.openTab('guide', { revealIfOpened: true })
-            } catch {
-              // The guide is a convenience fallback; the error is the real result.
-            }
-            return message
-          }
-        }
 
         // A client reload can briefly leave the previous generation's type in
         // the registry. Reuse it rather than failing setup on a duplicate id.
