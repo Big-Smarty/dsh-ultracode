@@ -1,0 +1,59 @@
+{
+  "name": "@local/dsh-ultracode",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Ultracode mode: a session-scoped switch that turns every substantive task into a dynamic multi-agent workflow, with a composer switch, armed-composer glow, and a live workflow sidebar.",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-api-remotes",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-sidebar-right",
+        "@deepseek-ai/dsh-api-session-controller"
+      ]
+    }
+  },
+  "license": "MIT",
+  "author": "Big-Smarty",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Big-Smarty/dsh-ultracode.git"
+  },
+  "homepage": "https://github.com/Big-Smarty/dsh-ultracode#readme",
+  "bugs": {
+    "url": "https://github.com/Big-Smarty/dsh-ultracode/issues"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "ultracode",
+    "workflow",
+    "multi-agent"
+  ],
+  "scripts": {
+    "test": "node --test"
+  }
+}

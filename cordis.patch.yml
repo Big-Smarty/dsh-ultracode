@@ -1,0 +1,6 @@
+# Ultracode: a session mode, its logged stance, and its composer controls.
+# The row is inert unless the Host halves it names are composed; the Client
+# half is served from the same package.
+- insert:
+    - id: ultracode
+      name: '@local/dsh-ultracode'

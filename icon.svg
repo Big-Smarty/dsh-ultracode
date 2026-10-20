@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ultracode">
+  <defs>
+    <linearGradient id="ultracode-bolt" x1="12" y1="10" x2="52" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4f8cff"/>
+      <stop offset="0.52" stop-color="#8a6bff"/>
+      <stop offset="1" stop-color="#ffb545"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 4.5 55 18v28L32 59.5 9 46V18Z" fill="none" stroke="url(#ultracode-bolt)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M36.6 13.5 20.8 35.2h10.1l-4.6 14.6 17-21.9H33Z" fill="url(#ultracode-bolt)"/>
+  <circle cx="51" cy="14.5" r="3.2" fill="#ffb545"/>
+</svg>
