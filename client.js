@@ -1406,8 +1406,10 @@ window.__ModuleLoader__.load({
         ),
       )
 
-      ctx.inject(['sidebarRight', 'sidebarRightTabs'], (side) => {
-        const tabs = side.sidebarRightTabs
+      let wired = false
+      const wireSidebar = (tabs) => {
+        if (wired) return
+        wired = true
 
         // A client reload can briefly leave the previous generation's type in
         // the registry. Reuse it rather than failing setup on a duplicate id.
@@ -1474,7 +1476,13 @@ window.__ModuleLoader__.load({
           }),
           UltracodeTabTitle,
         )
-      })
+      }
+
+      // Register immediately when the services are already present; otherwise
+      // wait for them. The badge's opener above is lazy either way.
+      const tabsNow = ctx.get('sidebarRightTabs')
+      if (tabsNow !== undefined) wireSidebar(tabsNow)
+      ctx.inject(['sidebarRight', 'sidebarRightTabs'], (side) => wireSidebar(side.sidebarRightTabs))
     }
 
     return { inject, apply }
