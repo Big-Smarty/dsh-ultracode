@@ -46,7 +46,7 @@ Ultracode is a stance, not a preset. It needs the preset's `workflow` tool.
 | Minimal | no; persistent shell + `read_image` | UI-only. The complete persona also suppresses the policy; the overview reports **Workflow unavailable in this preset**. |
 | Custom | depends on its composition | Full when it composes `workflow-ptc` and `tool-workflow`; otherwise the policy is suppressed. |
 
-The policy checks the actual `workflow` tool for the agent. The overview warning recognizes the built-in `minimal` and `ptc` presets; a custom preset without workflow gets the suppressed policy but no preset-name warning.
+The policy checks whether `workflow` is model-visible for the agent. The overview warning recognizes the built-in `minimal` and `ptc` presets; a custom preset without workflow gets the suppressed policy but no preset-name warning.
 
 ## Install
 

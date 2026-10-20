@@ -424,7 +424,10 @@ export function apply(ctx) {
           // addresses. Presets that omit it (Minimal, PTC) must not receive
           // instructions to call it; the client overview explains why.
           try {
-            if (ctx.tools.get('workflow', context.agent) === undefined) return ''
+            // Check the model-visible schemas, not the presentation-agnostic
+            // registry: PTC mode collapses the surface to run_code even if a
+            // workflow definition exists in the global layer.
+            if (!ctx.tools.schemas(context.agent).some((tool) => tool.name === 'workflow')) return ''
           } catch {
             return ''
           }
