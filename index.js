@@ -49,7 +49,7 @@ Substantive work means any request that needs exploration across multiple files 
 ## Boundaries
 - Never delegate authority the user reserved: approvals, questions, secret access, destructive or irreversible operations.
 - Scale to the work: typically 3–8 agents for a focused task, more only for genuinely broad sweeps. Do not run a workflow to restate the request or for trivial work.
-- If the \`workflow\` tool is unavailable, fall back to \`subagent\` delegation and say that Ultracode degraded.
+- If the \`workflow\` tool is unavailable, do not emulate a workflow: work normally and say Ultracode is unavailable in this preset.
 - \`/ultracode off\` ends the mode; resume normal execution immediately.
 
 ## Reporting
@@ -141,7 +141,7 @@ export const projection = {
   },
 }
 
-export const inject = ['systemPrompt', 'sessionProjections']
+export const inject = ['systemPrompt', 'sessionProjections', 'tools']
 
 function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -419,7 +419,16 @@ export function apply(ctx) {
           const state = ctx.sessionProjections.stateOf(context.agent.session, PROJECTION_KEY)
           if (state === undefined) return ''
           const active = state.running === null ? state.active : state.running.wanted
-          return active ? POLICY : ''
+          if (!active) return ''
+          // The workflow tool is the only orchestration surface the policy
+          // addresses. Presets that omit it (Minimal, PTC) must not receive
+          // instructions to call it; the client overview explains why.
+          try {
+            if (ctx.tools.get('workflow', context.agent) === undefined) return ''
+          } catch {
+            return ''
+          }
+          return POLICY
         },
       }),
     'ultracode: policy section',

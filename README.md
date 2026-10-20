@@ -34,6 +34,20 @@ Ultracode is a session mode that turns every substantive task into a multi-agent
 - **Answers from the log.** No new session-event types. One projection folds `/ultracode` command lifecycles; another folds `tool-workflow/*` records and closes runs abandoned by interrupted or forked turns. Phases keep their raw identity; cancelled outcomes stay distinct from failures.
 - **No build step, no dependencies.** Plain ESM and browser JavaScript, host theme tokens, English and Chinese copy.
 
+## Preset compatibility
+
+Ultracode is a stance, not a preset. It needs the preset's `workflow` tool.
+
+| Preset | `workflow` tool | Ultracode behavior |
+|---|---|---|
+| Standard | yes | Full policy, phases, subagents, verification, and ledger. |
+| Creator (`cordis`) | yes | Full; Standard's tools plus plugin-authoring tools. |
+| PTC | no; only `run_code` and its SDK | Policy suppressed. The overview reports **Workflow unavailable in this preset**; no workflow runs. PTC can call subagents as SDK bindings, but that is code-level PTC, not a tracked Ultracode workflow. |
+| Minimal | no; persistent shell + `read_image` | UI-only. The complete persona also suppresses the policy; the overview reports **Workflow unavailable in this preset**. |
+| Custom | depends on its composition | Full when it composes `workflow-ptc` and `tool-workflow`; otherwise the policy is suppressed. |
+
+The policy checks the actual `workflow` tool for the agent. The overview warning recognizes the built-in `minimal` and `ptc` presets; a custom preset without workflow gets the suppressed policy but no preset-name warning.
+
 ## Install
 
 Requires DeepSeek Harness with the `workflow` tool and the Web/Desktop right sidebar. Tested with **0.2.1-rc.2**; nearby versions with the same services should work.

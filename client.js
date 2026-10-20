@@ -36,6 +36,8 @@ window.__ModuleLoader__.load({
       'panel.state.armedIdle': 'Waiting for the first substantive task. Trivial requests stay direct.',
       'panel.state.offHistory': 'History stays inspectable.',
       'panel.state.offIdle': 'No workflows yet. The next substantive request runs as a workflow once armed.',
+      'panel.state.noWorkflow': 'Workflow unavailable in this preset.',
+      'panel.unavailable': 'Unavailable',
       'panel.workflowCount': '{count} workflow',
       'panel.workflowsCount': '{count} workflows',
       'panel.agentCount': '{count} agent',
@@ -87,6 +89,8 @@ window.__ModuleLoader__.load({
       'panel.state.armedIdle': '等待第一个实质性任务；琐碎请求仍直接处理。',
       'panel.state.offHistory': '历史仍可查看。',
       'panel.state.offIdle': '暂无工作流。武装后，下一个实质性请求将作为工作流运行。',
+      'panel.state.noWorkflow': '当前预设不提供 workflow 工具。',
+      'panel.unavailable': '不可用',
       'panel.workflowCount': '{count} 个工作流',
       'panel.workflowsCount': '{count} 个工作流',
       'panel.agentCount': '{count} 个智能体',
@@ -186,6 +190,7 @@ window.__ModuleLoader__.load({
   font-size: 10.5px; color: var(--dsw-alias-label-tertiary); font-variant-numeric: tabular-nums;
 }
 .ucp-overviewText { margin: 6px 0 0; color: var(--dsw-alias-label-secondary); font-size: 11.5px; line-height: 17px; }
+.ucp-overviewText[data-unavailable="true"] { color: var(--ucp-warn); }
 .ucp-power {
   flex: none; height: 24px; padding: 0 8px; border: 1px solid var(--dsw-alias-border-l2);
   border-radius: var(--dsw-radius-sm); background: transparent; color: var(--dsw-alias-label-secondary);
@@ -662,7 +667,7 @@ window.__ModuleLoader__.load({
       )
     }
 
-    function PanelOverview({ active, pending, loaded, counts, stateText, powerLabel, t, onToggle }) {
+    function PanelOverview({ active, pending, loaded, counts, stateText, powerLabel, unavailable, disabled, t, onToggle }) {
       return h(
         'header',
         { className: 'ucp-overview', 'data-active': active ? 'true' : 'false' },
@@ -683,7 +688,7 @@ window.__ModuleLoader__.load({
                 className: 'ucp-power',
                 'data-active': active ? 'true' : 'false',
                 'aria-pressed': active,
-                disabled: pending !== null || !loaded,
+                disabled: disabled === true || pending !== null || !loaded,
                 title: powerLabel,
                 onClick: onToggle,
               },
@@ -691,15 +696,17 @@ window.__ModuleLoader__.load({
             ),
           ),
         ),
-        h('p', { className: 'ucp-overviewText' }, stateText),
+        h('p', { className: 'ucp-overviewText', 'data-unavailable': unavailable === true ? 'true' : 'false' }, stateText),
       )
     }
 
-    function UltracodePanel({ useProjection, useSessions, useTabInfo, t, toggle, resolveChild }) {
+    function UltracodePanel({ sessionId, useProjection, useSessions, useTabInfo, t, toggle, resolveChild }) {
       const stance = useProjection('ultracode')
       const ledger = useProjection('ultracodeRuns')
       const summaries = useSessions((state) => state.byId) ?? {}
       const tab = useTabInfo().tab
+      const preset = summaries[sessionId]?.projectionValues?.agentPreset
+      const noWorkflow = preset === 'minimal' || preset === 'ptc'
       const [now, setNow] = React.useState(() => Date.now())
       const [collapsedPhases, setCollapsedPhases] = React.useState(() => new Set())
       const [openRuns, setOpenRuns] = React.useState(() => new Set())
@@ -797,9 +804,11 @@ window.__ModuleLoader__.load({
           ? pending
             ? t('panel.arming')
             : t('panel.disarming')
-          : active
-            ? t('panel.disarm')
-            : t('panel.arm')
+          : noWorkflow && !active
+            ? t('panel.unavailable')
+            : active
+              ? t('panel.disarm')
+              : t('panel.arm')
 
       let counts = null
       if (runs.length > 0) {
@@ -815,15 +824,17 @@ window.__ModuleLoader__.load({
         counts = parts.join(' · ')
       }
 
-      const stateText = !loaded
-        ? t('panel.state.loading')
-        : active
-          ? runs.length > 0
-            ? t('panel.state.armed')
-            : t('panel.state.armedIdle')
-          : runs.length > 0
-            ? t('panel.state.offHistory')
-            : t('panel.state.offIdle')
+      const stateText = noWorkflow
+        ? t('panel.state.noWorkflow')
+        : !loaded
+          ? t('panel.state.loading')
+          : active
+            ? runs.length > 0
+              ? t('panel.state.armed')
+              : t('panel.state.armedIdle')
+            : runs.length > 0
+              ? t('panel.state.offHistory')
+              : t('panel.state.offIdle')
 
       const children = []
 
@@ -900,6 +911,8 @@ window.__ModuleLoader__.load({
           counts,
           stateText,
           powerLabel,
+          unavailable: noWorkflow,
+          disabled: noWorkflow && !active,
           t,
           onToggle: () => request(!active),
         }),
