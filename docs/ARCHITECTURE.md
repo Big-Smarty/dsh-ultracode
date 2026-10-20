@@ -25,9 +25,9 @@ Ultracode does not bypass approvals, sandbox policy, plan mode, or tool restrict
 
 ### Composer UI
 
-- **Ultracode switch** in the composer tool row (left of the model selector). Off is a quiet, bordered pill; on becomes an electric gradient with a pulsing bolt and status dot. The switch is optimistic, then reconciled with the host projection; failures show inline.
+- **Ultracode switch** in the composer tool row (left of the model selector). Off is a quiet, bordered pill; on becomes a flat accent tint with a status dot. The switch is optimistic, then reconciled with the host projection; failures show inline.
 - **Session-header badge** (`ULTRA`) at the top right of the conversation; it opens the workflow sidebar and doubles as the armed indicator.
-- **Armed-composer seam**: a travelling gradient hairline and soft glow along the top edge of the composer card.
+- **Armed-composer seam**: a thin, flat 1px accent line along the top edge of the composer card.
 - **Command-menu entry** for `/ultracode`, contributed automatically by the harness command registry.
 
 When a workflow actually runs, the transcript's native `workflow-run` card shows phases, agents, and progress — the visible payoff of the mode.
@@ -37,10 +37,10 @@ When a workflow actually runs, the transcript's native `workflow-run` card shows
 The `ULTRA` badge in the session header opens a dedicated **Ultracode** tab in the right sidebar:
 
 - **Live run ledger** — active and finished workflow runs, newest first, with status, elapsed time, agent count, and total tokens.
-- **Phase lanes** — every phase with a progress rail, dots, and a `settled/total` count. Phases named Review, Verify, Check, Audit, or Adversarial carry a shield and a verification tint.
+- **Phase lanes** — every phase with a progress rail, dots, and a `settled/total` count. Phases named Review, Verify, Check, Audit, or Adversarial carry a small `verify` tag and a flat tint.
 - **Agent rows** — status, label, model, token total, and wall time. Each row is live: running agents tick, and tokens/models update from the child Session's own projections.
 - **Drill-down** — click an agent to open its child conversation in the right sidebar: a new pane when the layout allows, otherwise a sibling tab. The workflow ledger stays open.
-- **Arm / stand down** — the panel header owns the session switch; when Ultracode is off, the ledger remains readable and a banner offers to re-arm it.
+- **Arm / stand down** — the panel header owns the only arm control; when Ultracode is off, the ledger remains readable and a banner explains the state.
 - **Cost context** — the panel keeps total workflows, agents, and tokens visible, and marks runs above twelve agents as high fan-out.
 
 The badge is always present once the Host projection is available, so the ledger is reachable even while the mode is off. The right sidebar's guide also lists the panel as an entry.

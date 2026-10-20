@@ -13,8 +13,8 @@ Ultracode is a session mode that turns every substantive task into a multi-agent
 
 - **Session mode, not a model setting.** `/ultracode [on|off|status]` arms one session. The stance is folded from the command log, so resume, fork, and replay restore it.
 - **Workflow-first policy.** While armed, a prompt section after the `workflow` tool's own guidance classifies work as substantive or trivial, requires phases and `pipeline`/`parallel` fan-out, isolates writers, adds adversarial verification, and asks for evidence in the report.
-- **Composer switch.** A quiet pill when off, an electric gradient with a pulsing bolt when armed, plus a travelling seam along the composer edge.
-- **Workflow sidebar.** The `ULTRA` badge opens a right-sidebar ledger: running and finished runs, phase cards with progress rails and dots, per-agent status, model, tokens, and wall time, verification shields, a high-fan-out marker, and child-transcript drill-down.
+- **Composer switch.** A quiet bordered pill when off; a flat accent tint and dot when armed, plus a thin seam along the composer edge. No gradients, no icon glyphs.
+- **Workflow sidebar.** The `ULTRA` badge opens a right-sidebar ledger: running and finished runs, phase cards with progress rails and dots, per-agent status, model, tokens, and wall time, verification tags, a high-fan-out marker, and child-transcript drill-down.
 - **Answers from the log.** No new session-event types. One projection folds `/ultracode` command lifecycles; another folds `tool-workflow/*` records and closes runs abandoned by interrupted or forked turns. Phases keep their raw identity; cancelled outcomes stay distinct from failures.
 - **No build step, no dependencies.** Plain ESM and browser JavaScript, host theme tokens, English and Chinese copy.
 
@@ -52,7 +52,7 @@ Install the cloned directory through **Plugins → Add plugin** as above. The pl
 | Action | How |
 | --- | --- |
 | Arm the session | `/ultracode`, or click the Ultracode pill in the composer |
-| Disarm | `/ultracode off`, the composer pill, or the panel's power button |
+| Disarm | `/ultracode off`, the composer pill, or the panel header's arm control |
 | Check the stance | `/ultracode status` |
 | Open the ledger | Click the `ULTRA` badge in the session header, or right sidebar → **Ultracode** |
 | Inspect a run | Expand **Finished**, open a phase, click an agent to read its child transcript |
