@@ -61,6 +61,12 @@ Ultracode is per session. Trivial requests — a lookup, a one-line edit, a sing
 
 The panel is workflow-focused. Shell and other background jobs remain in DSH's existing jobs control.
 
+### Troubleshooting
+
+- **The `ULTRA` badge shows a red `!`** — hover it for the failure. The opener falls back to expanding the right sidebar guide.
+- **The Ultracode tab is missing or unavailable after an update** — hard-refresh the page (`Ctrl+Shift+R`). Client plugins are loaded from the page's module graph at boot, so a stale graph can survive a hot reload.
+- **The badge does nothing at all** — check **Settings → Plugins** for a page-local client sync error, then refresh and retry.
+
 ## How it works
 
 - `ultracode` projection — `{ active, pending }` folded from `command/run` / `command/done`.
