@@ -9,6 +9,22 @@ Ultracode is a session mode that turns every substantive task into a multi-agent
 [![test](https://github.com/Big-Smarty/dsh-ultracode/actions/workflows/test.yml/badge.svg)](https://github.com/Big-Smarty/dsh-ultracode/actions/workflows/test.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+## Screenshots
+
+<p align="center">
+  <a href="docs/images/panel.png"><img src="docs/images/panel.png" width="330" alt="Ultracode panel with the merged overview block, a running workflow, and a finished workflow"></a>
+</p>
+
+<p align="center"><em>The overview block, a live run, and a finished run.</em></p>
+
+![Ultracode beside a DeepSeek Harness session](docs/images/session.png)
+
+*The Ultracode tab in context.*
+
+![A workflow running in the transcript](docs/images/run.png)
+
+*The workflow tool's run card.*
+
 ## Features
 
 - **Session mode, not a model setting.** `/ultracode [on|off|status]` arms one session. The stance is folded from the command log, so resume, fork, and replay restore it.
